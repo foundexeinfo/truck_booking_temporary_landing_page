@@ -20,6 +20,12 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## MongoDB reviews
+
+Copy `.env.example` to `.env.local` and replace the placeholders in `MONGODB_URI` with your MongoDB Atlas connection details. Include the database name in the URI path. If the username or password contains reserved URL characters, URL-encode those credentials before adding them to the URI.
+
+Keep `.env.local` private and never expose the URI through a `NEXT_PUBLIC_` variable. Restart the development server after changing environment variables. Reviews are stored in the `truck_booking` database's `truck_booking_review` collection and are listed from MongoDB by the review section.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

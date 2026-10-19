@@ -1,26 +1,77 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f5f7f8;
+  --foreground: #17212b;
+  --brand-orange: #f05a18;
+  --brand-navy: #17212b;
+  --brand-green: #16834a;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Noto Sans Bengali", "Hind Siliguri", "Nirmala UI", system-ui,
+    sans-serif;
+}
+
+::selection {
+  background: rgb(240 90 24 / 18%);
+}
+
+.hero-pattern {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 82% 12%, rgb(240 90 24 / 18%), transparent 34%),
+    linear-gradient(118deg, #111c26 0%, #203342 58%, #263c4b 100%);
+}
+
+.hero-pattern::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image: radial-gradient(rgb(255 255 255 / 12%) 1px, transparent 1px);
+  background-position: 10px 10px;
+  background-size: 28px 28px;
+  content: "";
+  mask-image: linear-gradient(90deg, transparent 25%, black);
+  opacity: 0.3;
+}
+
+.form-control {
+  min-height: 3.15rem;
+  border: 1px solid #d8e0e5;
+  background-color: #fbfcfd;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+}
+
+.form-control:focus {
+  border-color: var(--brand-orange);
+  background-color: #fff;
+  box-shadow: 0 0 0 4px rgb(240 90 24 / 11%);
+  outline: none;
+}
+
+.form-control:disabled {
+  cursor: not-allowed;
+  background-color: #f0f2f4;
 }
