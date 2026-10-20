@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { FaWhatsapp } from 'react-icons/fa';
 import { InputField } from './ui/InputField';
 import { SelectField } from './ui/SelectField';
 import { TRUCK_SIZES, GOODS_TYPES } from '@/data/vehicleData';
@@ -16,6 +17,7 @@ export interface BookingFormData {
   goods: string;
   date: string;
   time?: string;
+  budget?: string;
   details?: string;
   discussion?: string;
 }
@@ -70,158 +72,208 @@ export const BookingForm: React.FC = () => {
   };
 
   return (
-    <section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-[0_18px_60px_rgb(23_33_43_/_7%)] sm:p-8 lg:p-10">
-      <div className="mb-7 flex flex-col justify-between gap-4 border-b border-slate-100 pb-6 sm:flex-row sm:items-end">
-        <div>
-          <span className="mb-2 inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1.5 text-xs font-bold text-[#d94e13]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#f05a18]" />
-            সহজে বুকিং করুন
+    <div className="@container relative w-full max-w-[760px] overflow-hidden rounded-[20px] border border-[#E8ECF1] bg-white text-[#0F172A] shadow-[0_18px_50px_rgba(15,23,42,0.12)]">
+      <span
+        className="absolute inset-x-0 top-0 h-[5px] bg-[linear-gradient(90deg,#eb601b_0%,#f97a2f_100%)]"
+        aria-hidden="true"
+      />
+
+      <div className="p-5 pt-6 sm:p-7 sm:pt-7">
+        <div className="mb-5 flex items-center gap-3.5">
+          <span className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-[14px] bg-[#EB601B] text-white">
+            <svg
+              viewBox="0 0 24 24"
+              width="26"
+              height="26"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M1 6h13v10H1z" />
+              <path d="M14 9h4l3 3v4h-7z" />
+              <circle cx="5.5" cy="17.5" r="1.8" />
+              <circle cx="17.5" cy="17.5" r="1.8" />
+            </svg>
           </span>
-          <h2 className="text-2xl font-extrabold tracking-tight text-[#17212b] sm:text-3xl">
-            বুকিংয়ের তথ্য দিন
-          </h2>
-          <p className="mt-2 text-sm leading-6 text-slate-500 sm:text-base">
-            প্রয়োজনীয় তথ্য পূরণ করুন, আমরা দ্রুত যোগাযোগ করব।
+          <div>
+            <h2 className="text-[22px] font-bold leading-tight">ট্রাক বুকিং করুন</h2>
+            <p className="mt-1 text-sm leading-6 text-[#6B7684]">
+              তথ্যগুলো দিন — সাথে সাথে আনুমানিক ভাড়া জেনে নিন।
+            </p>
+          </div>
+        </div>
+
+        <div className="mb-5 h-px w-full bg-[#EDF0F4]" aria-hidden="true" />
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-12 @md:col-span-6">
+              <InputField
+                label="আপনার নাম"
+                name="name"
+                placeholder="আপনার নাম লিখুন..."
+                required
+                registration={register('name', { required: 'নাম দেওয়া আবশ্যক' })}
+                error={errors.name}
+              />
+            </div>
+
+            <div className="col-span-12 @md:col-span-6">
+              <InputField
+                label="মোবাইল নাম্বার"
+                name="phone"
+                type="tel"
+                placeholder="01XXXXXXXXX"
+                required
+                registration={register('phone', {
+                  required: 'মোবাইল নম্বর আবশ্যক',
+                  pattern: {
+                    value: /^01[3-9]\d{8}$/,
+                    message: 'সঠিক বাংলাদেশি মোবাইল নম্বর দিন',
+                  },
+                })}
+                error={errors.phone}
+              />
+            </div>
+
+            <div className="col-span-12 @md:col-span-6">
+              <SelectField
+                label="গাড়ির ধরন"
+                options={[
+                  { label: 'খোলা', value: 'খোলা' },
+                  { label: 'কাভার্ড', value: 'কাভার্ড' },
+                ]}
+                required
+                registration={register('vehicleType', { required: 'গাড়ির ধরন নির্বাচন করুন' })}
+                error={errors.vehicleType}
+              />
+            </div>
+
+            <div className="col-span-12 @md:col-span-6">
+              <SelectField
+                label="গাড়ির সাইজ ও ধারণক্ষমতা"
+                placeholder={selectedVehicleType ? 'সাইজ নির্বাচন করুন' : 'আগে গাড়ির ধরন নির্বাচন করুন'}
+                disabled={!selectedVehicleType}
+                options={sizeOptions}
+                required
+                registration={register('size', { required: 'সাইজ নির্বাচন করুন' })}
+                error={errors.size}
+              />
+            </div>
+
+            <div className="col-span-12 @md:col-span-6">
+              <InputField
+                label="লোড পয়েন্ট"
+                name="pickup"
+                placeholder="লোড পয়েন্ট লিখুন..."
+                required
+                registration={register('pickup', { required: 'লোড পয়েন্ট আবশ্যক' })}
+                error={errors.pickup}
+              />
+            </div>
+
+            <div className="col-span-12 @md:col-span-6">
+              <InputField
+                label="আনলোড পয়েন্ট"
+                name="drop"
+                placeholder="আনলোড পয়েন্ট লিখুন..."
+                required
+                registration={register('drop', { required: 'আনলোড পয়েন্ট আবশ্যক' })}
+                error={errors.drop}
+              />
+            </div>
+
+            <div className="col-span-12 @md:col-span-6">
+              <SelectField
+                label="মালামালের ধরণ"
+                options={GOODS_TYPES}
+                required
+                registration={register('goods', { required: 'মালামাল নির্বাচন করুন' })}
+                error={errors.goods}
+              />
+            </div>
+
+            <div className="col-span-12 @md:col-span-6">
+              <InputField
+                label="তারিখ"
+                name="date"
+                type="date"
+                required
+                registration={register('date', { required: 'তারিখ নির্বাচন করুন' })}
+                error={errors.date}
+              />
+            </div>
+
+            <div className="col-span-12 @md:col-span-6">
+              <InputField
+                label="সময়"
+                name="time"
+                type="time"
+                registration={register('time')}
+              />
+            </div>
+
+            <div className="col-span-12 @md:col-span-6">
+              <InputField
+                label="আনুমানিক বাজেট (টাকা)"
+                name="budget"
+                type="number"
+                placeholder="যেমন: 5000"
+                registration={register('budget', {
+                  pattern: {
+                    value: /^\d+$/,
+                    message: 'শুধু সংখ্যা দিন (যেমন: 5000)',
+                  },
+                })}
+                error={errors.budget}
+              />
+            </div>
+
+            <div className="col-span-12">
+              <label className="field-label" htmlFor="details">
+                বিবরণ / আনুমানিক ওজন
+              </label>
+              <textarea
+                id="details"
+                {...register('details')}
+                rows={3}
+                placeholder="যেমন: খাট, আলমারি, ফ্রিজ; আনুমানিক ওজন ১ টন"
+                className="form-control w-full resize-y"
+              />
+            </div>
+
+            <div className="col-span-12">
+              <label className="field-label" htmlFor="discussion">
+                আলোচনা
+              </label>
+              <textarea
+                id="discussion"
+                {...register('discussion')}
+                rows={3}
+                placeholder="আপনার অতিরিক্ত কথা বা বিশেষ নির্দেশনা লিখুন"
+                className="form-control w-full resize-y"
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn btn-primary mt-5 w-full px-5 py-3.5 text-base disabled:cursor-wait disabled:opacity-75"
+          >
+            <FaWhatsapp className="h-5 w-5" aria-hidden="true" />
+            {loading ? 'তথ্য প্রস্তুত করা হচ্ছে...' : 'বুকিং করুন'}
+          </button>
+
+          <p className="mt-3 text-center text-xs leading-5 text-[#7B8794]">
+            বাটনে চাপ দিলে WhatsApp খুলবে এবং আপনার দেওয়া তথ্যসহ একটি বার্তা তৈরি হবে। পাঠানোর
+            আগে তথ্য যাচাই করে Send চাপুন।
           </p>
-        </div>
-        <p className="text-xs font-medium text-slate-400">
-          <span className="text-red-500">*</span> চিহ্নিত ঘরগুলো পূরণ করা আবশ্যক
-        </p>
+        </form>
       </div>
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 gap-x-5 gap-y-5 md:grid-cols-2">
-          <InputField
-            label="আপনার নাম"
-            name="name"
-            placeholder="নাম লিখুন"
-            required
-            registration={register('name', { required: 'নাম দেওয়া আবশ্যক' })}
-            error={errors.name}
-          />
-
-          <InputField
-            label="মোবাইল নম্বর"
-            name="phone"
-            type="tel"
-            placeholder="01XXXXXXXXX"
-            required
-            registration={register('phone', {
-              required: 'মোবাইল নম্বর আবশ্যক',
-              pattern: {
-                value: /^01[3-9]\d{8}$/,
-                message: 'সঠিক বাংলাদেশি মোবাইল নম্বর দিন',
-              },
-            })}
-            error={errors.phone}
-          />
-
-          <InputField
-            label="লোড পয়েন্ট / যেখান থেকে নেবে"
-            name="pickup"
-            placeholder="এলাকা, জেলা"
-            required
-            registration={register('pickup', { required: 'লোড পয়েন্ট আবশ্যক' })}
-            error={errors.pickup}
-          />
-
-          <InputField
-            label="আনলোড পয়েন্ট / যেখানে যাবে"
-            name="drop"
-            placeholder="এলাকা, জেলা"
-            required
-            registration={register('drop', { required: 'আনলোড পয়েন্ট আবশ্যক' })}
-            error={errors.drop}
-          />
-
-          <SelectField
-            label="গাড়ির ধরন"
-            options={[
-              { label: 'খোলা', value: 'খোলা' },
-              { label: 'কাভার্ড', value: 'কাভার্ড' },
-            ]}
-            required
-            registration={register('vehicleType', { required: 'গাড়ির ধরন নির্বাচন করুন' })}
-            error={errors.vehicleType}
-          />
-
-          <SelectField
-            label="গাড়ির সাইজ ও ধারণক্ষমতা"
-            placeholder={selectedVehicleType ? 'সাইজ নির্বাচন করুন' : 'আগে গাড়ির ধরন নির্বাচন করুন'}
-            disabled={!selectedVehicleType}
-            options={sizeOptions}
-            required
-            registration={register('size', { required: 'সাইজ নির্বাচন করুন' })}
-            error={errors.size}
-          />
-
-          <SelectField
-            label="মালামালের ধরন"
-            options={GOODS_TYPES}
-            required
-            registration={register('goods', { required: 'মালামাল নির্বাচন করুন' })}
-            error={errors.goods}
-          />
-
-          <InputField
-            label="গাড়ি নেওয়ার তারিখ"
-            name="date"
-            type="date"
-            required
-            registration={register('date', { required: 'তারিখ নির্বাচন করুন' })}
-            error={errors.date}
-          />
-        </div>
-
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-          <div>
-            <label className="mb-2 block text-sm font-bold text-[#182230]">
-              মালামালের বিবরণ / আনুমানিক ওজন
-            </label>
-            <textarea
-              {...register('details')}
-              rows={4}
-              placeholder="যেমন: খাট, আলমারি, ফ্রিজ; আনুমানিক ওজন ১ টন"
-              className="form-control w-full resize-y rounded-xl p-3.5 text-sm text-[#182230] placeholder:text-slate-400"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-bold text-[#182230]">
-              আলোচনা
-            </label>
-            <textarea
-              {...register('discussion')}
-              rows={4}
-              placeholder="আপনার অতিরিক্ত কথা বা বিশেষ নির্দেশনা লিখুন"
-              className="form-control w-full resize-y rounded-xl p-3.5 text-sm text-[#182230] placeholder:text-slate-400"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-          <InputField
-            label="পছন্দের সময়"
-            name="time"
-            type="time"
-            registration={register('time')}
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-[#16834a] px-6 py-4 text-base font-extrabold text-white shadow-lg shadow-green-900/15 transition hover:-translate-y-0.5 hover:bg-[#116d3d] hover:shadow-xl disabled:translate-y-0 disabled:cursor-wait disabled:opacity-60 sm:text-lg"
-        >
-          <span aria-hidden="true">◉</span>
-          {loading ? 'তথ্য প্রস্তুত করা হচ্ছে...' : 'WhatsApp-এ বুকিং পাঠান'}
-          {!loading && <span aria-hidden="true">↗</span>}
-        </button>
-
-        <p className="text-center text-xs leading-5 text-slate-500">
-          বাটনে চাপ দিলে WhatsApp খুলবে এবং আপনার দেওয়া তথ্যসহ একটি বার্তা তৈরি হবে। পাঠানোর আগে তথ্য যাচাই করে Send চাপুন।
-        </p>
-      </form>
-    </section>
+    </div>
   );
 };

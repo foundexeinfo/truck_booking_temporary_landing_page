@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { FaChevronDown, FaCommentDots, FaStar } from 'react-icons/fa';
 
 interface Review {
   id: string;
@@ -63,7 +64,7 @@ export const ReviewSection: React.FC = () => {
         const result = (await response.json()) as ReviewsResponse;
 
         if (!response.ok || !result.success || !result.reviews || !result.stats) {
-          throw new Error(result.message || 'রিভিউ লোড করা যায়নি। পরে আবার চেষ্টা করুন।');
+          throw new Error(result.message || 'রিভিউ লোড করা যায়নি। পরে আবার চেষ্টা করুন।');
         }
 
         setReviews(result.reviews);
@@ -71,7 +72,7 @@ export const ReviewSection: React.FC = () => {
       } catch (error) {
         if (!controller.signal.aborted) {
           setErrorMessage(
-            error instanceof Error ? error.message : 'রিভিউ লোড করা যায়নি। পরে আবার চেষ্টা করুন।'
+            error instanceof Error ? error.message : 'রিভিউ লোড করা যায়নি। পরে আবার চেষ্টা করুন।'
           );
         }
       } finally {
@@ -102,17 +103,17 @@ export const ReviewSection: React.FC = () => {
       };
 
       if (!response.ok || !result.success || !result.review || !result.stats) {
-        throw new Error(result.message || 'রিভিউ জমা দেওয়া যায়নি। পরে আবার চেষ্টা করুন।');
+        throw new Error(result.message || 'রিভিউ জমা দেওয়া যায়নি। পরে আবার চেষ্টা করুন।');
       }
 
       const newReview = result.review;
       setReviews((currentReviews) => [newReview, ...currentReviews].slice(0, 50));
       setStats(result.stats);
       setFormData(initialFormData);
-      setSuccessMessage('আপনার রিভিউটি সফলভাবে জমা হয়েছে। ধন্যবাদ!');
+      setSuccessMessage('আপনার রিভিউটি সফলভাবে জমা হয়েছে। ধন্যবাদ!');
     } catch (error) {
       setErrorMessage(
-        error instanceof Error ? error.message : 'রিভিউ জমা দেওয়া যায়নি। পরে আবার চেষ্টা করুন।'
+        error instanceof Error ? error.message : 'রিভিউ জমা দেওয়া যায়নি। পরে আবার চেষ্টা করুন।'
       );
     } finally {
       setSubmitting(false);
@@ -120,142 +121,173 @@ export const ReviewSection: React.FC = () => {
   };
 
   return (
-    <section
-      id="reviews"
-      className="mt-12 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-[0_12px_40px_rgb(23_33_43_/_5%)] sm:mt-14 sm:p-8"
-    >
-      <div className="flex flex-col justify-between gap-5 border-b border-slate-100 pb-6 sm:flex-row sm:items-center">
-        <div>
-          <span className="text-xs font-bold uppercase tracking-[0.15em] text-[#f05a18]">কাস্টমার ফিডব্যাক</span>
-          <h3 className="mt-1 text-xl font-extrabold text-[#17212b] sm:text-2xl">গ্রাহকদের মতামত ও আলোচনা</h3>
-          <p className="mt-1 text-sm text-slate-500">আমাদের সার্ভিসের অভিজ্ঞতা জেনে নিন</p>
-        </div>
+    <section id="reviews" className="section section-soft scroll-mt-24">
+      <div className="shell">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-12">
+          <div>
+            <span className="eyebrow">
+              <FaCommentDots className="h-4 w-4" aria-hidden="true" />
+              গ্রাহকদের মতামত
+            </span>
+            <h2 className="section-title">আমাদের সন্তুষ্ট গ্রাহকরা কি বলছেন?</h2>
 
-        <div className="flex items-center gap-3 self-start rounded-2xl border border-orange-100 bg-orange-50/70 px-4 py-3 sm:self-auto">
-          <div className="text-2xl font-black text-[#f05a18]">
-            {stats.averageRating.toLocaleString('bn-BD', {
-              minimumFractionDigits: 1,
-              maximumFractionDigits: 1,
-            })}
-            <span className="text-lg">★</span>
-          </div>
-          <div className="text-xs text-[#17212b]">
-            <p className="font-bold">{stats.totalReviews.toLocaleString('bn-BD')} টি রিভিউ</p>
-            <p className="mt-0.5 text-slate-500">গ্রাহকদের গড় রেটিং</p>
-          </div>
-        </div>
-      </div>
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-[14px] font-bold text-[#0F172A] ring-1 ring-[#E5E9EF]">
+                <FaStar className="h-4 w-4 text-[#FFB800]" aria-hidden="true" />
+                {stats.averageRating.toLocaleString('bn-BD', {
+                  minimumFractionDigits: 1,
+                  maximumFractionDigits: 1,
+                })}{' '}
+                / ৫
+              </span>
+              <span className="text-[14px] text-[#6B7684]">
+                মোট {stats.totalReviews.toLocaleString('bn-BD')} টি রিভিউ
+              </span>
+            </div>
 
-      {errorMessage && (
-        <p role="alert" className="mt-5 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
-          {errorMessage}
-        </p>
-      )}
-      {successMessage && (
-        <p role="status" className="mt-5 rounded-xl bg-green-50 px-4 py-3 text-sm text-green-700">
-          {successMessage}
-        </p>
-      )}
+            {errorMessage && (
+              <p
+                role="alert"
+                className="mt-6 rounded-xl border border-[#FECACA] bg-[#FEF2F2] px-4 py-3 text-sm text-[#991B1B]"
+              >
+                {errorMessage}
+              </p>
+            )}
 
-      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-        {loading ? (
-          <p className="text-sm text-slate-500">রিভিউ লোড হচ্ছে...</p>
-        ) : reviews.length === 0 ? (
-          <p className="text-sm text-slate-500">এখনও কোনো রিভিউ নেই। আপনার অভিজ্ঞতা শেয়ার করুন।</p>
-        ) : (
-          reviews.map((review) => (
-            <article
-              key={review.id}
-              className="flex flex-col justify-between rounded-2xl border border-slate-100 bg-[#fafbfc] p-5 transition duration-200 hover:-translate-y-1 hover:border-orange-200 hover:shadow-lg hover:shadow-slate-900/5"
-            >
-              <div>
-                <div className="mb-3 flex items-center justify-between gap-2">
-                  <span className="text-sm font-extrabold text-[#17212b]">{review.name}</span>
-                  <span className="shrink-0 rounded-full bg-orange-50 px-2 py-1 text-xs font-bold text-orange-600">
-                    ★ {review.rating}
-                  </span>
-                </div>
-                <p className="mb-3 text-xs font-medium text-slate-400">
-                  {review.location} ·{' '}
-                  {new Date(review.createdAt).toLocaleDateString('bn-BD', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                  })}
+            <div className="mt-8 grid gap-5 sm:grid-cols-2">
+              {loading ? (
+                <p className="text-sm text-[#6B7684]">রিভিউ লোড হচ্ছে...</p>
+              ) : reviews.length === 0 ? (
+                <p className="text-sm text-[#6B7684]">
+                  এখনও কোনো রিভিউ নেই। আপনার অভিজ্ঞতা শেয়ার করুন।
                 </p>
-                <p className="text-sm leading-6 text-slate-600">&ldquo;{review.comment}&rdquo;</p>
+              ) : (
+                reviews.map((review) => (
+                  <article
+                    key={review.id}
+                    className="card card-hover flex flex-col justify-between p-6"
+                  >
+                    <div>
+                      <div className="mb-3 flex items-center gap-1 text-[#FFB800]">
+                        {Array.from({ length: review.rating }).map((_, index) => (
+                          <FaStar key={index} className="h-4 w-4" aria-hidden="true" />
+                        ))}
+                      </div>
+                      <p className="text-[15px] leading-7 text-[#4A5563]">
+                        &ldquo;{review.comment}&rdquo;
+                      </p>
+                    </div>
+                    <div className="mt-5 flex items-center gap-3 border-t border-[#EDF0F4] pt-4">
+                      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#FFF3EC] text-[16px] font-bold text-[#C14A0E]">
+                        {review.name.trim().charAt(0).toUpperCase()}
+                      </span>
+                      <div>
+                        <p className="text-[15px] font-bold text-[#0F172A]">{review.name}</p>
+                        <p className="text-xs text-[#7B8794]">
+                          {review.location} ·{' '}
+                          {new Date(review.createdAt).toLocaleDateString('bn-BD', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  </article>
+                ))
+              )}
+            </div>
+          </div>
+
+          <aside className="lg:sticky lg:top-24 lg:self-start">
+            <form onSubmit={handleSubmit} className="card p-6 sm:p-7">
+              <h3 className="text-[20px] font-bold text-[#0F172A]">আপনার রিভিউ লিখুন</h3>
+              <p className="mt-1.5 text-sm leading-6 text-[#6B7684]">
+                আপনার পরিবহন অভিজ্ঞতা অন্যদের সঙ্গে শেয়ার করুন।
+              </p>
+
+              <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1">
+                <label className="field-label">
+                  আপনার নাম
+                  <input
+                    required
+                    minLength={2}
+                    maxLength={80}
+                    value={formData.name}
+                    onChange={(event) => setFormData({ ...formData, name: event.target.value })}
+                    className="form-control mt-1.5 w-full"
+                    placeholder="আপনার নাম লিখুন"
+                  />
+                </label>
+                <label className="field-label">
+                  এলাকা
+                  <input
+                    required
+                    minLength={2}
+                    maxLength={100}
+                    value={formData.location}
+                    onChange={(event) => setFormData({ ...formData, location: event.target.value })}
+                    className="form-control mt-1.5 w-full"
+                    placeholder="এলাকা, জেলা"
+                  />
+                </label>
+                <label className="field-label">
+                  রেটিং
+                  <div className="relative mt-1.5">
+                    <select
+                      value={formData.rating}
+                      onChange={(event) =>
+                        setFormData({ ...formData, rating: Number(event.target.value) })
+                      }
+                      className="form-control w-full appearance-none pr-10"
+                    >
+                      {[5, 4, 3, 2, 1].map((rating) => (
+                        <option key={rating} value={rating}>
+                          {rating} ★
+                        </option>
+                      ))}
+                    </select>
+                    <FaChevronDown
+                      className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]"
+                      aria-hidden="true"
+                    />
+                  </div>
+                </label>
+                <label className="field-label sm:col-span-2 lg:col-span-1">
+                  আপনার মতামত
+                  <textarea
+                    required
+                    minLength={10}
+                    maxLength={1000}
+                    rows={4}
+                    value={formData.comment}
+                    onChange={(event) => setFormData({ ...formData, comment: event.target.value })}
+                    className="form-control mt-1.5 w-full resize-y"
+                    placeholder="আপনার অভিজ্ঞতা লিখুন"
+                  />
+                </label>
               </div>
-            </article>
-          ))
-        )}
-      </div>
 
-      <form onSubmit={handleSubmit} className="mt-8 border-t border-slate-100 pt-6">
-        <h4 className="text-lg font-extrabold text-[#17212b]">আপনার রিভিউ লিখুন</h4>
-        <p className="mt-1 text-sm text-slate-500">আপনার পরিবহন অভিজ্ঞতা অন্যদের সঙ্গে শেয়ার করুন।</p>
+              {successMessage && (
+                <p
+                  role="status"
+                  className="mt-4 rounded-xl border border-[#F8DCC6] bg-[#FFF3EC] px-4 py-3 text-sm text-[#7A2D05]"
+                >
+                  {successMessage}
+                </p>
+              )}
 
-        <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <label className="text-sm font-bold text-[#182230]">
-            আপনার নাম
-            <input
-              required
-              minLength={2}
-              maxLength={80}
-              value={formData.name}
-              onChange={(event) => setFormData({ ...formData, name: event.target.value })}
-              className="form-control mt-2 w-full rounded-xl p-3.5 text-sm font-normal"
-              placeholder="নাম লিখুন"
-            />
-          </label>
-          <label className="text-sm font-bold text-[#182230]">
-            এলাকা
-            <input
-              required
-              minLength={2}
-              maxLength={100}
-              value={formData.location}
-              onChange={(event) => setFormData({ ...formData, location: event.target.value })}
-              className="form-control mt-2 w-full rounded-xl p-3.5 text-sm font-normal"
-              placeholder="এলাকা, জেলা"
-            />
-          </label>
-          <label className="text-sm font-bold text-[#182230]">
-            রেটিং
-            <select
-              value={formData.rating}
-              onChange={(event) => setFormData({ ...formData, rating: Number(event.target.value) })}
-              className="form-control mt-2 w-full rounded-xl p-3.5 text-sm font-normal"
-            >
-              {[5, 4, 3, 2, 1].map((rating) => (
-                <option key={rating} value={rating}>
-                  {rating} ★
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="text-sm font-bold text-[#182230] sm:col-span-2">
-            আপনার মতামত
-            <textarea
-              required
-              minLength={10}
-              maxLength={1000}
-              rows={4}
-              value={formData.comment}
-              onChange={(event) => setFormData({ ...formData, comment: event.target.value })}
-              className="form-control mt-2 w-full resize-y rounded-xl p-3.5 text-sm font-normal"
-              placeholder="আপনার অভিজ্ঞতা লিখুন"
-            />
-          </label>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="btn btn-primary mt-5 w-full px-6 py-3 text-[15px] disabled:cursor-wait disabled:opacity-60"
+              >
+                {submitting ? 'জমা হচ্ছে...' : 'রিভিউ জমা দিন'}
+              </button>
+            </form>
+          </aside>
         </div>
-
-        <button
-          type="submit"
-          disabled={submitting}
-          className="mt-5 rounded-xl bg-[#f05a18] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#d94e13] disabled:cursor-wait disabled:opacity-60"
-        >
-          {submitting ? 'জমা হচ্ছে...' : 'রিভিউ জমা দিন'}
-        </button>
-      </form>
+      </div>
     </section>
   );
 };

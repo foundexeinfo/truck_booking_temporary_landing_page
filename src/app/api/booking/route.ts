@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-
-const WHATSAPP_RECEIVER_NUMBER = '8801346695348';
+import { siteConfig } from '@/lib/siteConfig';
 
 export async function POST(req: Request) {
   try {
@@ -16,6 +15,7 @@ export async function POST(req: Request) {
       goods,
       date,
       time,
+      budget,
       details,
       discussion,
     } = body;
@@ -38,12 +38,20 @@ export async function POST(req: Request) {
       `📦 মালামাল: ${goods}`,
       `📅 তারিখ: ${date}`,
       `🕒 সময়: ${time || 'উল্লেখ করা হয়নি'}`,
+      `💰 বাজেট: ${budget ? `${budget} টাকা` : 'উল্লেখ করা হয়নি'}`,
       `📝 বিবরণ/ওজন: ${details || 'উল্লেখ করা হয়নি'}`,
       `💬 আলোচনা: ${discussion || 'উল্লেখ করা হয়নি'}`,
     ];
 
+    if (!siteConfig.whatsappNumber) {
+      return NextResponse.json(
+        { success: false, message: 'Whatsapp number configure kora hoyeche' },
+        { status: 500 }
+      );
+    }
+
     const encodedMessage = encodeURIComponent(messageLines.join('\n'));
-    const whatsappUrl = `https://wa.me/${WHATSAPP_RECEIVER_NUMBER}?text=${encodedMessage}`;
+    const whatsappUrl = `https://wa.me/${siteConfig.whatsappNumber}?text=${encodedMessage}`;
 
     return NextResponse.json({
       success: true,
