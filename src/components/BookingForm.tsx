@@ -5,7 +5,9 @@ import { useForm, useWatch } from 'react-hook-form';
 import { FaWhatsapp } from 'react-icons/fa';
 import { InputField } from './ui/InputField';
 import { SelectField } from './ui/SelectField';
+import { TimeField } from './ui/TimeField';
 import { TRUCK_SIZES, GOODS_TYPES } from '@/data/vehicleData';
+import { BUDGET_OPTIONS, LOCATION_SELECT_OPTIONS } from '@/data/locations';
 
 export interface BookingFormData {
   name: string;
@@ -14,6 +16,7 @@ export interface BookingFormData {
   drop: string;
   vehicleType: string;
   size: string;
+  tripType: string;
   goods: string;
   date: string;
   time?: string;
@@ -28,10 +31,12 @@ export const BookingForm: React.FC = () => {
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm<BookingFormData>();
 
   const selectedVehicleType = useWatch({ control, name: 'vehicleType' });
+  const selectedTime = useWatch({ control, name: 'time' });
 
   const sizeOptions = useMemo(() => {
     if (!selectedVehicleType) return [];
@@ -48,7 +53,10 @@ export const BookingForm: React.FC = () => {
       const res = await fetch('/api/booking', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        }),
       });
 
       const result = await res.json();
@@ -165,10 +173,24 @@ export const BookingForm: React.FC = () => {
             </div>
 
             <div className="col-span-12 @md:col-span-6">
-              <InputField
+              <SelectField
+                label="ট্রিপের ধরন"
+                options={[
+                  { label: 'একক ট্রিপ (একবারে যাওয়া ও ফেরা)', value: 'একক ট্রিপ' },
+                  { label: 'আপ-ডাউন ট্রিপ (যাওয়া ও ফেরা আলাদা)', value: 'আপ-ডাউন ট্রিপ' },
+                ]}
+                placeholder="ট্রিপের ধরন নির্বাচন করুন"
+                required
+                registration={register('tripType', { required: 'ট্রিপের ধরন নির্বাচন করুন' })}
+                error={errors.tripType}
+              />
+            </div>
+
+            <div className="col-span-12 @md:col-span-6">
+              <SelectField
                 label="লোড পয়েন্ট"
-                name="pickup"
-                placeholder="লোড পয়েন্ট লিখুন..."
+                options={LOCATION_SELECT_OPTIONS}
+                placeholder="লোড পয়েন্ট নির্বাচন করুন"
                 required
                 registration={register('pickup', { required: 'লোড পয়েন্ট আবশ্যক' })}
                 error={errors.pickup}
@@ -176,10 +198,10 @@ export const BookingForm: React.FC = () => {
             </div>
 
             <div className="col-span-12 @md:col-span-6">
-              <InputField
-                label="আনলোড পয়েন্ট"
-                name="drop"
-                placeholder="আনলোড পয়েন্ট লিখুন..."
+              <SelectField
+                label="আনলোড পয়েন্ট (ডাউন)"
+                options={LOCATION_SELECT_OPTIONS}
+                placeholder="আনলোড পয়েন্ট নির্বাচন করুন"
                 required
                 registration={register('drop', { required: 'আনলোড পয়েন্ট আবশ্যক' })}
                 error={errors.drop}
@@ -208,26 +230,19 @@ export const BookingForm: React.FC = () => {
             </div>
 
             <div className="col-span-12 @md:col-span-6">
-              <InputField
-                label="সময়"
-                name="time"
-                type="time"
-                registration={register('time')}
+              <TimeField
+                label="সময় (ঐচ্ছিক)"
+                value={selectedTime}
+                onChange={(value) => setValue('time', value, { shouldDirty: true })}
               />
             </div>
 
             <div className="col-span-12 @md:col-span-6">
-              <InputField
-                label="আনুমানিক বাজেট (টাকা)"
-                name="budget"
-                type="number"
-                placeholder="যেমন: 5000"
-                registration={register('budget', {
-                  pattern: {
-                    value: /^\d+$/,
-                    message: 'শুধু সংখ্যা দিন (যেমন: 5000)',
-                  },
-                })}
+              <SelectField
+                label="আপনার বাজেট (ঐচ্ছিক)"
+                options={BUDGET_OPTIONS}
+                placeholder="বাজেট নির্বাচন করুন"
+                registration={register('budget')}
                 error={errors.budget}
               />
             </div>
