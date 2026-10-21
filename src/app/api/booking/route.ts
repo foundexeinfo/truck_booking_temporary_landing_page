@@ -3,6 +3,21 @@ import { siteConfig } from '@/lib/siteConfig';
 
 const DHAKA_TIME_ZONE = 'Asia/Dhaka';
 
+const padTime = (n: number) => String(n).padStart(2, '0');
+
+const formatPreferredTime = (time?: string) => {
+  if (!time) return '';
+  const match = /^(\d{2}):(\d{2})$/.exec(time.trim());
+  if (!match) return time;
+
+  let hour = Number(match[1]);
+  const minute = Number(match[2]);
+  const meridiem = hour >= 12 ? 'PM' : 'AM';
+  hour = hour % 12;
+  if (hour === 0) hour = 12;
+  return `${hour}:${padTime(minute)} ${meridiem}`;
+};
+
 const getZoneOffsetMinutes = (date: Date, timeZone: string) => {
   const formatter = new Intl.DateTimeFormat('en-US', {
     timeZone,
@@ -85,14 +100,16 @@ export async function POST(req: Request) {
       vehicleType,
       size,
       tripType,
-      goods,
-      date,
-      time,
-      timeZone,
-      budget,
-      details,
-      discussion,
-    } = body;
+    goods,
+    date,
+    time,
+    preferredTime,
+    timeZone,
+    budget,
+    budgetType,
+    details,
+    discussion,
+  } = body;
 
     if (!name || !phone || !pickup || !drop || !size || !tripType || !goods || !date) {
       return NextResponse.json(
@@ -101,7 +118,11 @@ export async function POST(req: Request) {
       );
     }
 
-    const bangladeshTime = formatBangladeshTime(time, timeZone);
+    const bangladeshTime = preferredTime
+      ? `${formatPreferredTime(preferredTime)}`
+      : formatBangladeshTime(time, timeZone)
+        ? `${formatBangladeshTime(time, timeZone)}`
+        : 'উল্লেখ করা হয়নি';
     const isNumericBudget = /^[\d\u09E6-\u09EF,.\s\u2013-]+$/.test(budget ?? '');
 
     const messageLines = [
@@ -115,9 +136,13 @@ export async function POST(req: Request) {
       `🔄 ট্রিপের ধরন: ${tripType}`,
       `📦 মালামাল: ${goods}`,
       `📅 তারিখ: ${date}`,
-      `🕒 সময়: ${bangladeshTime || 'উল্লেখ করা হয়নি'}`,
+      `🕒 পছন্দের সময়: ${bangladeshTime}`,
       `💰 বাজেট: ${
-        budget ? (isNumericBudget ? `${budget} টাকা` : budget) : 'উল্লেখ করা হয়নি'
+        budgetType === 'negotiable'
+          ? 'আলোচনা সাপেক্ষে'
+          : budget
+            ? (isNumericBudget ? `${budget} টাকা` : budget)
+            : 'উল্লেখ করা হয়নি'
       }`,
       `📝 বিবরণ/ওজন: ${details || 'উল্লেখ করা হয়নি'}`,
       `💬 আলোচনা: ${discussion || 'উল্লেখ করা হয়নি'}`,

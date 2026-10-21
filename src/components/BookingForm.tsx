@@ -231,7 +231,7 @@ export const BookingForm: React.FC = () => {
 
             <div className="col-span-12 @md:col-span-6">
               <label htmlFor="preferredTime" className="field-label">
-                পছন্দের সময়
+                পছন্দের সময় (বাংলাদেশ সময়)
               </label>
               <input
                 id="preferredTime"
