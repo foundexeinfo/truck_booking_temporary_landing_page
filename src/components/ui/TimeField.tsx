@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaClock } from 'react-icons/fa';
 
 interface TimeFieldProps {
@@ -19,6 +19,21 @@ interface ParsedTime {
 }
 
 const pad = (value: number) => String(value).padStart(2, '0');
+
+const getBDTimeString = () => {
+  try {
+    const formatter = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Asia/Dhaka',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+    return formatter.format(new Date());
+  } catch {
+    const now = new Date();
+    return `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  }
+};
 
 const toParts = (value?: string): { hour: number; minute: number; meridiem: 'AM' | 'PM' } => {
   const match = /^(\d{1,2}):(\d{2})$/.exec((value ?? '').trim());
@@ -98,13 +113,26 @@ export const TimeField: React.FC<TimeFieldProps> = ({
   error,
   required = false,
 }) => {
-  const initial = toParts(value);
+  const [bdTime] = useState(() => getBDTimeString());
+  const initial = toParts(value || bdTime);
 
   const [text, setText] = useState(() => (value ? formatDisplay(initial.hour, initial.minute, initial.meridiem) : ''));
   const [meridiem, setMeridiem] = useState<'AM' | 'PM'>(initial.meridiem);
   const [lastValid, setLastValid] = useState<ParsedTime | null>(
-    value ? parseTime(value, initial.meridiem) : null
+    value ? parseTime(value, initial.meridiem) : parseTime(bdTime, initial.meridiem)
   );
+
+  useEffect(() => {
+    if (!value && bdTime) {
+      const parsed = parseTime(bdTime, 'AM');
+      if (parsed) {
+        setLastValid(parsed);
+        setText(formatDisplay(parsed.hour, parsed.minute, parsed.meridiem));
+        onChange(parsed.value);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleTextChange = (raw: string) => {
     setText(raw);
@@ -119,12 +147,16 @@ export const TimeField: React.FC<TimeFieldProps> = ({
   const handleMeridiemChange = (next: 'AM' | 'PM') => {
     setMeridiem(next);
 
-    const parsed = parseTime(text, next) ?? (text.trim() ? null : {
-      hour: 12,
-      minute: 0,
-      meridiem: next,
-      value: `${pad(next === 'PM' ? 12 : 0)}:00`,
-    });
+    const parsed =
+      parseTime(text, next) ??
+      (text.trim()
+        ? null
+        : {
+            hour: 12,
+            minute: 0,
+            meridiem: next,
+            value: `${pad(next === 'PM' ? 12 : 0)}:00`,
+          });
 
     if (parsed) {
       setLastValid(parsed);
@@ -161,11 +193,29 @@ export const TimeField: React.FC<TimeFieldProps> = ({
           onChange={(event) => handleTextChange(event.target.value)}
           onBlur={handleBlur}
           placeholder="যেমন: 2:30 PM"
-          aria-label={`${label} (12 ঘণ্টার ফরম্যাটে)`}
+          aria-label={`${label} (বাংলাদেশ সময়)`}
           className={`form-control w-full pl-10 pr-[104px] ${
             error ? 'border-[#EF4444]' : ''
           }`}
         />
+
+        <div className="absolute right-2 top-1/2 flex -translate-y-1/2 overflow-hidden rounded-[8px] border border-[#E5E9EF] bg-white">
+          {(['AM', 'PM'] as const).map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => handleMeridiemChange(option)}
+              aria-pressed={meridiem === option}
+              className={`px-2.5 py-1 text-[12px] font-bold transition ${
+                meridiem === option
+                  ? 'bg-[#EB601B] text-white'
+                  : 'text-[#64748B] hover:text-[#C14A0E]'
+              }`}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
 
         <div className="absolute right-2 top-1/2 flex -translate-y-1/2 overflow-hidden rounded-[8px] border border-[#E5E9EF] bg-white">
           {(['AM', 'PM'] as const).map((option) => (
