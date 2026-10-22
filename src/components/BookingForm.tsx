@@ -269,7 +269,7 @@ export const BookingForm: React.FC = () => {
                   htmlFor="customerBudget"
                   className="field-label"
                 >
-                  গ্রাহকের বাজেট (টাকা)
+                  আপনার বাজেট (টাকা)
                 </label>
 
                 <input
