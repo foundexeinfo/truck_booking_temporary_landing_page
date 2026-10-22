@@ -56,6 +56,7 @@ export const BookingForm: React.FC = () => {
           ...data,
           budgetType,
           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          displayDate: data.date ? new Date(data.date + 'T00:00:00').toLocaleDateString('en-US') : undefined,
         }),
       });
 

@@ -100,16 +100,20 @@ export async function POST(req: Request) {
       vehicleType,
       size,
       tripType,
-    goods,
-    date,
-    time,
-    preferredTime,
-    timeZone,
-    budget,
-    budgetType,
-    details,
-    discussion,
-  } = body;
+      goods,
+      date,
+      time,
+      preferredTime,
+      budget,
+      budgetType,
+      details,
+      discussion,
+      timeZone,
+    } = body;
+    const bangladeshTime = preferredTime
+      ? formatPreferredTime(preferredTime)
+      : formatBangladeshTime(time, timeZone) || 'উল্লেখ করা হয়নি';
+    const bookingDate = (body as any).displayDate || date;
 
     if (!name || !phone || !pickup || !drop || !size || !tripType || !goods || !date) {
       return NextResponse.json(
@@ -118,17 +122,13 @@ export async function POST(req: Request) {
       );
     }
 
-    const bangladeshTime = preferredTime
-      ? `${formatPreferredTime(preferredTime)}`
-      : formatBangladeshTime(time, timeZone)
-        ? `${formatBangladeshTime(time, timeZone)}`
-        : 'উল্লেখ করা হয়নি';
     const isNumericBudget = /^[\d\u09E6-\u09EF,.\s\u2013-]+$/.test(budget ?? '');
 
     const messageLines = [
-      'আসসালামু আলাইকুম। ঠিকানা লজিস্টিকস পিএলসি-এর মাধ্যমে আমি ট্রাক ও পিকআপ বুকিং করতে চাই।',
+      'আসসালামু আলাইকুম।',
       '',
-      `👤 নাম: ${name}`,
+      'ঠিকানা লজিস্টিকস পিএলসি-এর মাধ্যমে আমি ট্রাক ও পিকআপ বুকিং করতে চাই।',
+      '',
       `📞 মোবাইল: ${phone}`,
       `📍 লোড পয়েন্ট: ${pickup}`,
       `📍 আনলোড পয়েন্ট: ${drop}`,
@@ -136,16 +136,16 @@ export async function POST(req: Request) {
       `🚚 গাড়ি: ${size || vehicleType}`,
       `🔄 ট্রিপের ধরন: ${tripType}`,
       `📦 মালামাল: ${goods}`,
-      `📅 তারিখ: ${date}`,
-      `🕒 পছন্দের সময়: ${bangladeshTime}`,
-      `💰 বাজেট: ${
+      `📆 তারিখ: ${bookingDate || date}`,
+      `⏰ পছন্দের সময়: ${bangladeshTime}`,
+      `💸 বাজেট: ${
         budgetType === 'negotiable'
           ? 'আলোচনা সাপেক্ষে'
           : budget
             ? (isNumericBudget ? `${budget} টাকা` : budget)
             : 'উল্লেখ করা হয়নি'
       }`,
-      `📝 বিবরণ/ওজন: ${details || 'উল্লেখ করা হয়নি'}`,
+      `🗒️ বিবরণ/ওজন: ${details || 'উল্লেখ করা হয়নি'}`,
       `💬 আলোচনা: ${discussion || 'উল্লেখ করা হয়নি'}`,
     ];
 
