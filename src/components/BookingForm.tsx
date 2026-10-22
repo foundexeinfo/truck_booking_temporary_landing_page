@@ -235,6 +235,7 @@ export const BookingForm: React.FC = () => {
               </label>
               <input
                 id="preferredTime"
+                required
                 type="time"
                 {...register('preferredTime')}
                 className="form-control w-full"
@@ -252,6 +253,7 @@ export const BookingForm: React.FC = () => {
               <select
                 id="budgetType"
                 value={budgetType}
+                required
                 onChange={(e) => setBudgetType(e.target.value)}
                 className="form-control w-full"
               >
@@ -273,6 +275,7 @@ export const BookingForm: React.FC = () => {
                 <input
                   id="customerBudget"
                   type="number"
+                  required
                   min="0"
                   {...register('budget')}
                   placeholder="যেমন: ৫০০০ টাকা"
@@ -291,6 +294,7 @@ export const BookingForm: React.FC = () => {
                 rows={3}
                 placeholder="যেমন: খাট, আলমারি, ফ্রিজ; আনুমানিক ওজন ১ টন"
                 className="form-control w-full resize-y"
+                required
               />
             </div>
 
