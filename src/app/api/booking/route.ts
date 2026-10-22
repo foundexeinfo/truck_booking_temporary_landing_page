@@ -132,6 +132,7 @@ export async function POST(req: Request) {
       `📞 মোবাইল: ${phone}`,
       `📍 লোড পয়েন্ট: ${pickup}`,
       `📍 আনলোড পয়েন্ট: ${drop}`,
+      `🚚 গাড়ির ধরন: ${vehicleType || ''}`,
       `🚚 গাড়ি: ${size || vehicleType}`,
       `🔄 ট্রিপের ধরন: ${tripType}`,
       `📦 মালামাল: ${goods}`,
