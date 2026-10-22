@@ -275,7 +275,7 @@ export const BookingForm: React.FC = () => {
                 <input
                   id="customerBudget"
                   type="number"
-                  required
+                  
                   min="0"
                   {...register('budget')}
                   placeholder="যেমন: ৫০০০ টাকা"
