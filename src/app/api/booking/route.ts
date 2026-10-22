@@ -141,16 +141,16 @@ export async function POST(req: Request) {
       "",
       "ঠিকানা লজিস্টিকস পিএলসি-এর মাধ্যমে আমি ট্রাক ও পিকআপ বুকিং করতে চাই।",
       "",
-      `📞 মোবাইল: ${phone}`,
-      `📍 লোড পয়েন্ট: ${pickup}`,
-      `📍 আনলোড পয়েন্ট: ${drop}`,
-      `🚚 গাড়ির ধরন: ${vehicleType || ""}`,
-      `🚚 গাড়ি: ${size || vehicleType}`,
-      `🔄 ট্রিপের ধরন: ${tripType}`,
-      `📦 মালামাল: ${goods}`,
-      `📆 তারিখ: ${bookingDate || date}`,
-      `⏰ পছন্দের সময়: ${bangladeshTime}`,
-      `💸 বাজেট: ${
+      ` মোবাইল: ${phone}`,
+      ` লোড পয়েন্ট: ${pickup}`,
+      ` আনলোড পয়েন্ট: ${drop}`,
+      ` গাড়ির ধরন: ${vehicleType || ""}`,
+      ` গাড়ি: ${size || vehicleType}`,
+      ` ট্রিপের ধরন: ${tripType}`,
+      ` মালামাল: ${goods}`,
+      ` তারিখ: ${bookingDate || date}`,
+      ` পছন্দের সময়: ${bangladeshTime}`,
+      ` বাজেট: ${
         budgetType === "negotiable"
           ? "আলোচনা সাপেক্ষে"
           : budget
@@ -159,8 +159,8 @@ export async function POST(req: Request) {
               : budget
             : "উল্লেখ করা হয়নি"
       }`,
-      `🗒️ বিবরণ/ওজন: ${details || "উল্লেখ করা হয়নি"}`,
-      `💬 আলোচনা: ${discussion || "উল্লেখ করা হয়নি"}`,
+      ` বিবরণ/ওজন: ${details || "উল্লেখ করা হয়নি"}`,
+      ` আলোচনা: ${discussion || "উল্লেখ করা হয়নি"}`,
     ];
 
     if (!siteConfig.whatsappNumber) {
