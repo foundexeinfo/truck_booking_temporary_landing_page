@@ -5,9 +5,12 @@ import {
   FaCheckCircle,
   FaClock,
   FaEnvelope,
+  FaFacebookF,
+  FaLinkedinIn,
   FaMapMarkerAlt,
   FaPhoneAlt,
   FaTruckMoving,
+  FaWhatsapp,
 } from 'react-icons/fa';
 import { siteConfig } from '@/lib/siteConfig';
 import { CopyrightYear } from './ui/CopyrightYear';
@@ -35,27 +38,57 @@ export const Footer: React.FC = () => {
     <footer id="contact" className="relative z-10 bg-[#2B3840] pb-8 pt-[130px] text-white">
       <div className="shell">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
+<div>
             <Link
               href="/"
-              className="inline-flex rounded-[14px] bg-white px-3.5 py-3 transition hover:bg-[#FFF3EC]"
+              aria-label="Thikana Logistics Home"
+              className="inline-flex items-center justify-center rounded-lg bg-white p-2.5 transition hover:bg-[#FFF3EC]"
             >
               <Image
-                src="/images/logo-trimmed.png"
-                alt="Thikana Logistics PLC Logo"
-                width={150}
-                height={38}
-                className="h-auto w-[128px] object-contain"
+                src="/images/logo.png"
+                alt="Thikana Logistics Logo"
+                width={130}
+                height={36}
+                className="block h-auto w-[110px] object-contain sm:w-[125px]"
               />
             </Link>
             <p className="mt-5 max-w-[280px] text-sm leading-6 text-white/70">
-              বাংলাদেশের যেকোন প্রান্তে ট্রাক ও পিকআপ পরিবহনে নির্ভরযোগ্য বুকিং সেবা — ন্যায্য
-              ভাড়া, অভিজ্ঞ ড্রাইভার, নিরাপদ ডেলিভারি।
+              বাংলাদেশের যেকোনো প্রান্তে ট্রাক ও পিকআপ পরিবহনে নির্ভরযোগ্য বুকিং সেবা — ন্যায্য ভাড়া, অভিজ্ঞ ড্রাইভার, নিরাপদ ডেলিভারি।
             </p>
             <span className="chip mt-5 bg-white/10 text-[#FFC72C]">
               <FaTruckMoving className="h-3.5 w-3.5" aria-hidden="true" />
               ৬৪ জেলায় সার্ভিস
             </span>
+
+            <div className="mt-5 flex items-center gap-3">
+              <a
+                href="https://facebook.com/thikanalogistics"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-[#EB601B] hover:text-white"
+              >
+                <FaFacebookF className="h-4 w-4" aria-hidden="true" />
+              </a>
+              <a
+                href="https://linkedin.com/company/thikanalogistics"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-[#EB601B] hover:text-white"
+              >
+                <FaLinkedinIn className="h-4 w-4" aria-hidden="true" />
+              </a>
+              <a
+                href="https://wa.me/8801700000000"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-[#EB601B] hover:text-white"
+              >
+                <FaWhatsapp className="h-4 w-4" aria-hidden="true" />
+              </a>
+            </div>
           </div>
 
           <div>
@@ -137,7 +170,7 @@ export const Footer: React.FC = () => {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-[13px] text-white/60 sm:flex-row">
           <p>
-            © <CopyrightYear /> Thikana Logistics PLC. সর্বস্বত্ব সংরক্ষিত।
+            © <CopyrightYear /> Thikana Logistics. সর্বস্বত্ব সংরক্ষিত।
           </p>
           <p>ঢাকা, বাংলাদেশ</p>
         </div>
