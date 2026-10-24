@@ -16,7 +16,17 @@ export async function getMongoClient() {
     return globalForMongo.mongoClientPromise;
   }
 
-  mongoClientPromise ??= new MongoClient(uri).connect();
+  if (!mongoClientPromise) {
+    // Drop a failed connection so the next request retries instead of reusing the rejection.
+    const connecting = new MongoClient(uri).connect().catch((error) => {
+      if (mongoClientPromise === connecting) mongoClientPromise = undefined;
+      if (globalForMongo.mongoClientPromise === connecting) {
+        globalForMongo.mongoClientPromise = undefined;
+      }
+      throw error;
+    });
+    mongoClientPromise = connecting;
+  }
 
   if (process.env.NODE_ENV !== 'production') {
     globalForMongo.mongoClientPromise = mongoClientPromise;

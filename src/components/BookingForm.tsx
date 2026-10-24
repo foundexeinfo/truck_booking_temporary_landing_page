@@ -6,7 +6,6 @@ import { FaWhatsapp } from 'react-icons/fa';
 import { InputField } from './ui/InputField';
 import { SelectField } from './ui/SelectField';
 import { TRUCK_SIZES, GOODS_TYPES } from '@/data/vehicleData';
-import { BUDGET_OPTIONS, LOCATION_SELECT_OPTIONS } from '@/data/locations';
 
 export interface BookingFormData {
   name: string;
@@ -31,7 +30,6 @@ export const BookingForm: React.FC = () => {
     register,
     handleSubmit,
     control,
-    setValue,
     formState: { errors },
   } = useForm<BookingFormData>();
 
@@ -254,7 +252,6 @@ export const BookingForm: React.FC = () => {
               <select
                 id="budgetType"
                 value={budgetType}
-                required
                 onChange={(e) => setBudgetType(e.target.value)}
                 className="form-control w-full"
               >

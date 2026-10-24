@@ -110,11 +110,12 @@ export async function POST(req: Request) {
       details,
       discussion,
       timeZone,
+      displayDate,
     } = body;
     const bangladeshTime = preferredTime
       ? formatPreferredTime(preferredTime)
       : formatBangladeshTime(time, timeZone) || "উল্লেখ করা হয়নি";
-    const bookingDate = (body as any).displayDate || date;
+    const bookingDate = displayDate || date;
 
     if (
       !name ||
@@ -141,6 +142,7 @@ export async function POST(req: Request) {
       "",
       "ঠিকানা লজিস্টিকস পিএলসি-এর মাধ্যমে আমি ট্রাক ও পিকআপ বুকিং করতে চাই।",
       "",
+      `👤 নাম: ${name}`,
       `📞 মোবাইল: ${phone}`,
       `📍 লোড পয়েন্ট: ${pickup}`,
       `🚩 আনলোড পয়েন্ট: ${drop}`,
@@ -165,7 +167,7 @@ export async function POST(req: Request) {
 
     if (!siteConfig.whatsappNumber) {
       return NextResponse.json(
-        { success: false, message: "Whatsapp number configure kora hoyeche" },
+        { success: false, message: "Whatsapp number configure kora hoyni" },
         { status: 500 },
       );
     }
