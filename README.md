@@ -26,6 +26,18 @@ Copy `.env.example` to `.env.local` and replace the placeholders in `MONGODB_URI
 
 Keep `.env.local` private and never expose the URI through a `NEXT_PUBLIC_` variable. Restart the development server after changing environment variables. Reviews are stored in the `truck_booking` database's `truck_booking_review` collection and are listed from MongoDB by the review section.
 
+## Deploy to cPanel (thikanalogistics.com)
+
+The site runs as a CloudLinux "Setup Node.js App" on LiteSpeed. Build the bundle locally:
+
+```bash
+npm run package:cpanel
+```
+
+This creates `deploy.zip` (gitignored; it contains `.env`). Upload it to the home directory in cPanel File Manager, extract it into `~/truck-booking-landing-page` (replacing the old contents), then Restart the app in Setup Node.js App.
+
+Never run `npm install` or `next build` on the server: the account is capped at 100 processes, and building there exhausts it. The bundle keeps the standalone build in `app/` because the Node.js Selector reserves `node_modules` in the app root.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

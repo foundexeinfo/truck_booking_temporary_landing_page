@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# cPanel deploy bundle (contains .env secrets)
+/deploy.zip
+/.cpanel-bundle/
