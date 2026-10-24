@@ -80,7 +80,7 @@ export const Footer: React.FC = () => {
                 <FaLinkedinIn className="h-4 w-4" aria-hidden="true" />
               </a>
               <a
-                href="https://wa.me/8801700000000"
+                href={siteConfig.whatsappUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
